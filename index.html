@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speech-to-text with Nigerian-accented English</title>
+<style>
+  body { margin: 0; background: #fff; color: #1a1a1a; font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 20px 64px; }
+  h1 { font-size: 1.7rem; line-height: 1.25; margin: 0 0 8px; }
+  h2 { font-size: 1.1rem; margin: 40px 0 8px; }
+  .meta { color: #666; font-size: .9rem; margin: 0 0 24px; }
+  .lead { font-size: 1.1rem; }
+  table { width: 100%; border-collapse: collapse; font-size: .93rem; margin: 8px 0; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+  th { font-weight: 600; color: #444; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.total td { font-weight: 600; border-top: 2px solid #ccc; }
+  .bad { color: #b42318; }
+  .note { color: #666; font-size: .88rem; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  a { color: #1d4ed8; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #e5e5e5; color: #666; font-size: .9rem; }
+  @media (max-width: 520px) { body { font-size: 16px; } th, td { padding: 6px 4px; } .wide { font-size: .85rem; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Speech-to-text with Nigerian-accented English</h1>
+  <p class="meta">Pilot · October 2026 · Uchechukwu Ekpendu</p>
+
+  <p class="lead">Before a larger study on speech input for generative AI, I wanted to know how well two common speech recognisers handle Nigerian-accented English on short "edit this page" instructions.</p>
+
+  <h2>What I did</h2>
+  <p>Three Nigerian English speakers, from two different ethnic groups, each read the same 10 short instructions, the kind you'd give an AI to edit a web page (30 recordings, 234 words in total). Chrome's built-in speech recogniser (language set to en-NG) transcribed each one live. OpenAI's Whisper (<code>small.en</code>, run locally) transcribed the saved audio afterwards. I scored both with word error rate (WER): the share of words that were wrong, missing or added, after removing punctuation and capitals.</p>
+
+  <h2>Results</h2>
+  <table>
+    <thead><tr><th>Speaker</th><th class="num">Chrome WER</th><th class="num">Whisper WER</th></tr></thead>
+    <tbody>
+      <tr><td>S1-Potato</td><td class="num">5.1%</td><td class="num">7.7%</td></tr>
+      <tr><td>S2-Prime</td><td class="num">3.8%</td><td class="num">12.8%</td></tr>
+      <tr><td>S3-Zenin</td><td class="num">6.4%</td><td class="num">28.2%</td></tr>
+      <tr class="total"><td>All (30 recordings)</td><td class="num">5.1%</td><td class="num">16.2%</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Perfect transcripts: Chrome 18 of 30, Whisper 16 of 30. Lower WER is better.</p>
+
+  <ul>
+    <li><strong>Chrome did better overall:</strong> about 1 wrong word in 20, against 1 in 6 for Whisper.</li>
+    <li><strong>Whisper depended a lot on the speaker:</strong> from 7.7% to 28.2%. Chrome stayed between 3.8% and 6.4%.</li>
+    <li><strong>The error rate alone hides what matters.</strong> Some errors are harmless ("accent" for "accents"). Others change the edit completely: Chrome heard "bolder" as "border" or "boulder" for all three speakers, and "border" is a real design instruction.</li>
+  </ul>
+
+  <h2>Examples</h2>
+  <table class="wide">
+    <thead><tr><th>Said</th><th>Chrome heard</th><th>Whisper heard</th></tr></thead>
+    <tbody>
+      <tr><td>…something <strong>bolder</strong></td><td class="bad">something border (S2-Prime, S3-Zenin), something boulder (S1-Potato)</td><td>bolder (S1-Potato, S2-Prime), <span class="bad">buddha</span> (S3-Zenin)</td></tr>
+      <tr><td>Move the <strong>sign-up</strong> button…</td><td>correct for all three</td><td class="bad">"side knob button" (S1-Potato, S2-Prime)</td></tr>
+      <tr><td>Put the <strong>leaderboard</strong> table…</td><td>correct for all three</td><td class="bad">"little ball table" (S1-Potato), "lid above the wind" (S3-Zenin)</td></tr>
+      <tr><td>…join the <strong>league</strong></td><td>correct for all three</td><td class="bad">"join the leak" (S1-Potato), "join delete" (S2-Prime)</td></tr>
+      <tr><td>…background <strong>dark blue</strong></td><td class="bad">"black blue" (S3-Zenin)</td><td class="bad">"but I blew" (S3-Zenin)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Limitations</h2>
+  <ul>
+    <li>Three speakers from only two ethnic groups is tiny, and there's no comparison accent yet. Treat these numbers as a first look, not a finding.</li>
+    <li>People read a script in a quiet room. Real prompting is spontaneous and messier.</li>
+    <li>Chrome heard live audio while Whisper got the saved file, and I tested only one Whisper size. Larger models may do better.</li>
+    <li>Chrome's recogniser is a cloud service and can change without notice.</li>
+  </ul>
+
+  <h2>Implications and future work</h2>
+  <p>Speech input works for Nigerian-accented English, but which engine you pick matters, and so does who is speaking. Counting wrong words isn't enough either. What matters is whether an error changes what the AI does.</p>
+  <p>Next, I'm extending this to about 12 speakers across Yoruba, Igbo and Hausa backgrounds, and marking which errors change the instruction. Longer term, I want to compare Nigerian and North American English on real generative AI prompts, see how recognition errors change the way people prompt, and test interface fixes, like confirming uncertain words before the AI acts.</p>
+
+  <footer>
+    Code, scripts and text transcripts: <a href="[GITHUB_LINK]">GitHub</a>. Audio is not published; speakers agreed to take part and are identified by code names only.<br>
+    Contact: [your email]
+  </footer>
+</main>
+</body>
+</html>

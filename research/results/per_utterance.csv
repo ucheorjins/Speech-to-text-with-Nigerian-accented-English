@@ -1,0 +1,31 @@
+speaker,index,reference,browser,whisper,wer_browser,wer_whisper,lang
+S1-Potato,1,make the header background dark blue,make the header background dark blue,make the header background dark blue,0.0,0.0,en-NG
+S1-Potato,2,move the sign up button to the top right corner,move the sign up button to the top right corner,move the side knob button to the top right corner,0.0,0.2,en-NG
+S1-Potato,3,change the font of the title to something bolder,change the font of the title to something boulder,change the font of the title to something bolder,0.111,0.0,en-NG
+S1-Potato,4,add a search bar under the navigation menu,add a search but under the navigation menu,add a search bar under the navigation menu,0.125,0.0,en-NG
+S1-Potato,5,make the profile picture round and a bit smaller,make the profile picture round and a bit smaller,make the profile picture round and a bit smaller,0.0,0.0,en-NG
+S1-Potato,6,replace submit with join the league,replace submits with join the league,replace submits with join the leak,0.167,0.333,en-NG
+S1-Potato,7,add more space between the three cards,add more space between the three cards,add more space between the three cards,0.0,0.0,en-NG
+S1-Potato,8,change the green accents to orange,change the green accent to orange,change the green accents to orange,0.167,0.0,en-NG
+S1-Potato,9,put the leaderboard table in a card with a shadow,put the leaderboard table in a card with a shadow,put the little ball table in a card with a shadow,0.0,0.2,en-NG
+S1-Potato,10,make the whole layout work on mobile,make the whole layout work on mobile,make the whole layout work on mobile,0.0,0.0,en-NG
+S2-Prime,1,make the header background dark blue,make the header background dark blue,make the header background dark blue,0.0,0.0,en-NG
+S2-Prime,2,move the sign up button to the top right corner,move the sign up button to the top right corner,move the side knob button to the top right corner,0.0,0.2,en-NG
+S2-Prime,3,change the font of the title to something bolder,change the font of the title to something border,change the font of the title to something bolder,0.111,0.0,en-NG
+S2-Prime,4,add a search bar under the navigation menu,add a search bar under the navigation menu,add a search bar on that navigation menu,0.0,0.25,en-NG
+S2-Prime,5,make the profile picture round and a bit smaller,make the profile picture round and a bit smaller,make the profile picture round and a bit smaller,0.0,0.0,en-NG
+S2-Prime,6,replace submit with join the league,replace submit me join the league,in place submit with join delete,0.167,0.667,en-NG
+S2-Prime,7,add more space between the three cards,add more space between the three cards,add more space between the three cards,0.0,0.0,en-NG
+S2-Prime,8,change the green accents to orange,change the green accent to orange,change the green essential orange,0.167,0.333,en-NG
+S2-Prime,9,put the leaderboard table in a card with a shadow,put the leaderboard table in a card with a shadow,put the leaderboard table in a card with a shadow,0.0,0.0,en-NG
+S2-Prime,10,make the whole layout work on mobile,make the whole layout work on mobile,make the whole layout work on mobile,0.0,0.0,en-NG
+S3-Zenin,1,make the header background dark blue,make the header background black blue,make the head up background but i blew,0.167,0.833,en-NG
+S3-Zenin,2,move the sign up button to the top right corner,move the sign up button to the top right corner,move the sign of boats into the top right corner,0.0,0.3,en-NG
+S3-Zenin,3,change the font of the title to something bolder,change the font of the title to something border,change the font of the title to something buddha,0.111,0.111,en-NG
+S3-Zenin,4,add a search bar under the navigation menu,add the search bar under the navigation menu,add this search button on the navigation menu,0.125,0.375,en-NG
+S3-Zenin,5,make the profile picture round and a bit smaller,make the profile picture round and a bit smaller,make the profile picture round and a bit smaller,0.0,0.0,en-NG
+S3-Zenin,6,replace submit with join the league,replace submit with join the league,replace submits with join the league,0.0,0.167,en-NG
+S3-Zenin,7,add more space between the three cards,add more space between the three cards,admoss piece between the three cards,0.0,0.429,en-NG
+S3-Zenin,8,change the green accents to orange,change the green accent to orange,change the green accents to orange,0.167,0.0,en-NG
+S3-Zenin,9,put the leaderboard table in a card with a shadow,foods the leaderboard table in a card with a shadow,put the lid above the wind cut with this shadow,0.1,0.6,en-NG
+S3-Zenin,10,make the whole layout work on mobile,make the whole layout work on mobile,make the whole layout work on mobile,0.0,0.0,en-NG

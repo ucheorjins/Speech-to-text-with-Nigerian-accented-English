@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASR Sanity Check Recorder</title>
+<style>
+  :root { --bg:#fafaf9; --fg:#1c1917; --muted:#78716c; --accent:#2563eb; --rec:#dc2626; --card:#ffffff; --line:#e7e5e4; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  p.sub { color: var(--muted); margin: 0 0 20px; }
+  .card { background: var(--card); border:1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  label { font-size: .85rem; color: var(--muted); display:block; margin-bottom:4px; }
+  input, select { font: inherit; padding: 8px 10px; border:1px solid var(--line); border-radius: 8px; width: 100%; }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .prompt { font-size: 1.6rem; line-height: 1.35; font-weight: 600; margin: 8px 0 12px; min-height: 4.5rem; }
+  .counter { color: var(--muted); font-size: .9rem; }
+  .btns { display:flex; flex-wrap: wrap; gap: 8px; }
+  button { font: inherit; padding: 10px 16px; border-radius: 8px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+  button.primary { background: var(--accent); color:#fff; border-color: var(--accent); }
+  button.rec { background: var(--rec); color:#fff; border-color: var(--rec); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .heard { margin-top: 12px; padding: 10px; background:#f5f5f4; border-radius: 8px; min-height: 2.5rem; }
+  .status { margin-top: 8px; font-size: .9rem; color: var(--muted); }
+  table { width:100%; border-collapse: collapse; font-size: .85rem; }
+  th, td { text-align:left; border-bottom:1px solid var(--line); padding: 6px 4px; vertical-align: top; }
+  .warn { color: var(--rec); }
+</style>
+</head>
+<body>
+<main>
+  <h1>ASR sanity check recorder</h1>
+  <p class="sub">Records each instruction as an audio file and captures the browser's live speech-to-text at the same time. Use Chrome, served from localhost.</p>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="speaker">Speaker ID (no names, e.g. S1)</label>
+        <input id="speaker" value="S1">
+      </div>
+      <div>
+        <label for="lang">Recognition language</label>
+        <select id="lang">
+          <option value="en-US">en-US</option>
+          <option value="en-GB">en-GB</option>
+          <option value="en-NG">en-NG (if supported)</option>
+        </select>
+      </div>
+    </div>
+    <p id="support" class="status"></p>
+  </div>
+
+  <div class="card">
+    <div class="counter" id="counter"></div>
+    <div class="prompt" id="prompt"></div>
+    <div class="btns">
+      <button id="recBtn" class="rec">● Record</button>
+      <button id="stopBtn" disabled>■ Stop</button>
+      <button id="redoBtn" disabled>Redo</button>
+      <button id="nextBtn" class="primary" disabled>Next →</button>
+    </div>
+    <div class="heard" id="heard"></div>
+    <div class="status" id="status">Ready.</div>
+  </div>
+
+  <div class="card">
+    <div class="btns" style="margin-bottom:12px">
+      <button id="saveBtn" class="primary">Download results (JSON)</button>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>Reference</th><th>Browser heard</th><th>Audio file</th></tr></thead>
+      <tbody id="log"></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+const INSTRUCTIONS = [
+  "Make the header background dark blue.",
+  "Move the sign-up button to the top right corner.",
+  "Change the font of the title to something bolder.",
+  "Add a search bar under the navigation menu.",
+  "Make the profile picture round and a bit smaller.",
+  "Replace Submit with Join the league.",
+  "Add more space between the three cards.",
+  "Change the green accents to orange.",
+  "Put the leaderboard table in a card with a shadow.",
+  "Make the whole layout work on mobile."
+];
+
+const $ = (id) => document.getElementById(id);
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let idx = 0;
+let stream = null;
+let recorder = null;
+let chunks = [];
+let recognition = null;
+let transcript = "";
+let recogDone = false, audioDone = false, pendingFile = "";
+const results = [];
+const takes = {};
+
+if (!SR) {
+  $("support").innerHTML = '<span class="warn">This browser has no built-in speech recognition. Use Chrome.</span>';
+  $("recBtn").disabled = true;
+} else {
+  $("support").textContent = "Note: Chrome sends audio to an online service for recognition, so you need internet.";
+}
+
+function render() {
+  $("counter").textContent = `Instruction ${idx + 1} of ${INSTRUCTIONS.length}`;
+  $("prompt").textContent = INSTRUCTIONS[idx];
+  $("heard").textContent = "";
+}
+
+function maybeFinish() {
+  if (!(recogDone && audioDone)) return;
+  const speaker = $("speaker").value.trim() || "S?";
+  const entry = {
+    speaker,
+    index: idx + 1,
+    reference: INSTRUCTIONS[idx],
+    browser_transcript: transcript.trim(),
+    audio_file: pendingFile,
+    lang: $("lang").value,
+    recorded_at: new Date().toISOString()
+  };
+  // Replace any earlier take of this instruction for this speaker
+  const existing = results.findIndex(r => r.speaker === speaker && r.index === entry.index);
+  if (existing >= 0) results.splice(existing, 1, entry); else results.push(entry);
+  $("heard").textContent = entry.browser_transcript || "(nothing recognised)";
+  $("status").textContent = "Saved. Check the audio downloaded, then press Next (or Redo).";
+  $("nextBtn").disabled = idx >= INSTRUCTIONS.length - 1;
+  $("redoBtn").disabled = false;
+  $("recBtn").disabled = true;
+  drawLog();
+}
+
+function drawLog() {
+  $("log").innerHTML = results
+    .map(r => `<tr><td>${r.speaker}-${r.index}</td><td>${r.reference}</td><td>${r.browser_transcript || "<em>(none)</em>"}</td><td>${r.audio_file}</td></tr>`)
+    .join("");
+}
+
+async function startRecording() {
+  transcript = ""; recogDone = false; audioDone = false; chunks = [];
+  const speaker = $("speaker").value.trim() || "S?";
+  const key = `${speaker}_${String(idx + 1).padStart(2, "0")}`;
+  takes[key] = (takes[key] || 0) + 1;
+  pendingFile = `${key}_take${takes[key]}.webm`;
+  try {
+    stream = stream || await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch (e) {
+    $("status").innerHTML = '<span class="warn">Microphone blocked. Allow mic access and serve this page from localhost.</span>';
+    return;
+  }
+  recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = pendingFile;
+    a.click();
+    audioDone = true;
+    maybeFinish();
+  };
+
+  recognition = new SR();
+  recognition.lang = $("lang").value;
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  recognition.onresult = (e) => {
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) transcript += " " + e.results[i][0].transcript;
+    }
+  };
+  recognition.onerror = (e) => { $("status").innerHTML = `<span class="warn">Recognition error: ${e.error}</span>`; };
+  recognition.onend = () => { recogDone = true; maybeFinish(); };
+
+  recorder.start();
+  recognition.start();
+  $("status").textContent = "Recording… read the instruction once, naturally, then press Stop.";
+  $("recBtn").disabled = true; $("stopBtn").disabled = false;
+  $("nextBtn").disabled = true; $("redoBtn").disabled = true;
+}
+
+function stopRecording() {
+  $("stopBtn").disabled = true;
+  $("status").textContent = "Processing…";
+  if (recorder && recorder.state !== "inactive") recorder.stop();
+  if (recognition) recognition.stop();
+}
+
+$("recBtn").onclick = startRecording;
+$("stopBtn").onclick = stopRecording;
+$("redoBtn").onclick = () => { $("recBtn").disabled = false; $("redoBtn").disabled = true; $("nextBtn").disabled = true; $("heard").textContent = ""; $("status").textContent = "Redo: press Record."; };
+$("nextBtn").onclick = () => { idx++; render(); $("recBtn").disabled = false; $("nextBtn").disabled = true; $("redoBtn").disabled = true; $("status").textContent = "Ready."; };
+$("speaker").onchange = () => { idx = 0; render(); $("recBtn").disabled = !SR; $("nextBtn").disabled = true; $("redoBtn").disabled = true; $("status").textContent = "New speaker: starting from instruction 1."; };
+$("saveBtn").onclick = () => {
+  const blob = new Blob([JSON.stringify(results, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  const speakers = [...new Set(results.map(r => r.speaker))].join("-") || "results";
+  a.href = URL.createObjectURL(blob);
+  a.download = `browser_${speakers}.json`;
+  a.click();
+};
+
+render();
+</script>
+</body>
+</html>
