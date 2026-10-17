@@ -4,7 +4,7 @@ This pilot is a first step towards a larger study of speech input for generative
 
 ## Method
 
-**Participants.** Three speakers of Nigerian English, from two different ethnic groups, took part. Each is identified by a code name only (S1-Potato, S2-Prime, S3-Zenin).
+**Participants.** Three speakers of Nigerian English, from two ethnic groups (Igbo and Ukwani), took part. Each is identified by a code name only (S1-Potato, S2-Prime, S3-Zenin).
 
 **Materials.** Every participant read the same 10 short instructions, of the kind a user might give a generative AI system to modify a web page (listed below). This produced 30 recordings with 234 reference words in total.
 
@@ -44,7 +44,7 @@ Full transcripts for every recording are in `results/summary.md`.
 
 ## Limitations
 
-- The sample of three speakers from two ethnic groups is very small, and it has no comparison accent. These results are exploratory and should not be read as a finding.
+- The sample of three speakers from two ethnic groups (Igbo and Ukwani) is very small, and it has no comparison accent. These results are exploratory and should not be read as a finding.
 - Participants read a script in a quiet room. Real prompting is spontaneous and likely to be less fluent.
 - The two systems did not receive identical input: Chrome transcribed live audio, while Whisper transcribed the saved recordings. I also tested only one Whisper model size, and larger models may perform better.
 - Chrome's recogniser is a cloud service, so its behaviour may change without notice.
@@ -82,6 +82,10 @@ All participants gave consent to take part and to share their recordings. They a
 - `analyze.py`: transcribes the recordings with Whisper and scores both systems
 - `data/`: the browser transcripts (`browser_*.json`) and audio recordings (`audio/*.webm`)
 - `results/per_utterance.csv`, `results/summary.md`: WER for each recording and summary tables
+
+## Contact
+
+uchechukwuekpendu@gmail.com
 
 ---
 

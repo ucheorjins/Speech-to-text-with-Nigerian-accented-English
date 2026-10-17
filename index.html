@@ -33,7 +33,7 @@
   <p class="lead">This pilot is a first step towards a larger study of speech input for generative AI. It asks how accurately two widely available automatic speech recognition (ASR) systems transcribe Nigerian-accented English when people speak short instructions for editing a web page.</p>
 
   <h2>Method</h2>
-  <p><strong>Participants.</strong> Three speakers of Nigerian English, from two different ethnic groups, took part. Each is identified by a code name only (S1-Potato, S2-Prime, S3-Zenin).</p>
+  <p><strong>Participants.</strong> Three speakers of Nigerian English, from two ethnic groups (Igbo and Ukwani), took part. Each is identified by a code name only (S1-Potato, S2-Prime, S3-Zenin).</p>
   <p><strong>Materials.</strong> Every participant read the same 10 short instructions, of the kind a user might give a generative AI system to modify a web page. This produced 30 recordings with 234 reference words in total.</p>
   <p><strong>Systems.</strong> The Web Speech API built into Google Chrome, with the recognition language set to en-NG, transcribed each utterance live as it was spoken. OpenAI Whisper (<code>small.en</code>), run locally, transcribed the saved recording of each utterance afterwards.</p>
   <p><strong>Measure.</strong> I scored both systems by word error rate (WER): substitutions, deletions and insertions divided by the number of words in the reference. Lower values indicate better performance. Before scoring, I converted all text to lower case and removed punctuation.</p>
@@ -70,7 +70,7 @@
 
   <h2>Limitations</h2>
   <ul>
-    <li>The sample of three speakers from two ethnic groups is very small, and it has no comparison accent. These results are exploratory and should not be read as a finding.</li>
+    <li>The sample of three speakers from two ethnic groups (Igbo and Ukwani) is very small, and it has no comparison accent. These results are exploratory and should not be read as a finding.</li>
     <li>Participants read a script in a quiet room. Real prompting is spontaneous and likely to be less fluent.</li>
     <li>The two systems did not receive identical input: Chrome transcribed live audio, while Whisper transcribed the saved recordings. I also tested only one Whisper model size, and larger models may perform better.</li>
     <li>Chrome's recogniser is a cloud service, so its behaviour may change without notice.</li>
@@ -82,7 +82,7 @@
 
   <footer>
     Code, transcripts and audio recordings: <a href="https://github.com/ucheorjins/Speech-to-text-with-Nigerian-accented-English">GitHub</a>. All participants gave consent to take part and to share their recordings, and are identified by code names only.<br>
-    Contact: [your email]
+    Contact: <a href="mailto:uchechukwuekpendu@gmail.com">uchechukwuekpendu@gmail.com</a>
   </footer>
 </main>
 </body>
