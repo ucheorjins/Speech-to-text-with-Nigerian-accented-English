@@ -1,4 +1,4 @@
-# ASR sanity check: results
+# ASR pilot: results
 
 Whisper model: `small.en`. Browser engine: Chrome Web Speech API (language setting: en-NG).
 

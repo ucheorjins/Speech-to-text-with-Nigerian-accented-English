@@ -1,5 +1,5 @@
 """
-ASR sanity check: compare the browser's speech-to-text with Whisper
+ASR pilot: compare the browser's speech-to-text with Whisper
 on the same recordings, using word error rate (WER).
 
 Folder layout expected:
@@ -108,7 +108,7 @@ def main():
     groups["ALL"] = rows
 
     lines = [
-        "# ASR sanity check: results",
+        "# ASR pilot: results",
         "",
         f"Whisper model: `{MODEL_NAME}`. Browser engine: Chrome Web Speech API "
         f"(language setting: {', '.join(sorted({r['lang'] for r in rows}))}).",

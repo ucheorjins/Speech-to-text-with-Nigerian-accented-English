@@ -30,10 +30,13 @@
   <h1>Speech-to-text with Nigerian-accented English</h1>
   <p class="meta">Pilot · October 2026 · Uchechukwu Ekpendu</p>
 
-  <p class="lead">Before a larger study on speech input for generative AI, I wanted to know how well two common speech recognisers handle Nigerian-accented English on short "edit this page" instructions.</p>
+  <p class="lead">This pilot is a first step towards a larger study of speech input for generative AI. It asks how accurately two widely available automatic speech recognition (ASR) systems transcribe Nigerian-accented English when people speak short instructions for editing a web page.</p>
 
-  <h2>What I did</h2>
-  <p>Three Nigerian English speakers, from two different ethnic groups, each read the same 10 short instructions, the kind you'd give an AI to edit a web page (30 recordings, 234 words in total). Chrome's built-in speech recogniser (language set to en-NG) transcribed each one live. OpenAI's Whisper (<code>small.en</code>, run locally) transcribed the saved audio afterwards. I scored both with word error rate (WER): the share of words that were wrong, missing or added, after removing punctuation and capitals.</p>
+  <h2>Method</h2>
+  <p><strong>Participants.</strong> Three speakers of Nigerian English, from two different ethnic groups, took part. Each is identified by a code name only (S1-Potato, S2-Prime, S3-Zenin).</p>
+  <p><strong>Materials.</strong> Every participant read the same 10 short instructions, of the kind a user might give a generative AI system to modify a web page. This produced 30 recordings with 234 reference words in total.</p>
+  <p><strong>Systems.</strong> The Web Speech API built into Google Chrome, with the recognition language set to en-NG, transcribed each utterance live as it was spoken. OpenAI Whisper (<code>small.en</code>), run locally, transcribed the saved recording of each utterance afterwards.</p>
+  <p><strong>Measure.</strong> I scored both systems by word error rate (WER): substitutions, deletions and insertions divided by the number of words in the reference. Lower values indicate better performance. Before scoring, I converted all text to lower case and removed punctuation.</p>
 
   <h2>Results</h2>
   <table>
@@ -45,40 +48,40 @@
       <tr class="total"><td>All (30 recordings)</td><td class="num">5.1%</td><td class="num">16.2%</td></tr>
     </tbody>
   </table>
-  <p class="note">Perfect transcripts: Chrome 18 of 30, Whisper 16 of 30. Lower WER is better.</p>
+  <p class="note">Chrome produced a perfect transcript for 18 of the 30 recordings and Whisper for 16.</p>
 
   <ul>
-    <li><strong>Chrome did better overall:</strong> about 1 wrong word in 20, against 1 in 6 for Whisper.</li>
-    <li><strong>Whisper depended a lot on the speaker:</strong> from 7.7% to 28.2%. Chrome stayed between 3.8% and 6.4%.</li>
-    <li><strong>The error rate alone hides what matters.</strong> Some errors are harmless ("accent" for "accents"). Others change the edit completely: Chrome heard "bolder" as "border" or "boulder" for all three speakers, and "border" is a real design instruction.</li>
+    <li><strong>Overall accuracy.</strong> Chrome was more accurate overall, with about one word in 20 transcribed incorrectly, compared with about one in 6 for Whisper.</li>
+    <li><strong>Variation between speakers.</strong> Whisper's accuracy varied considerably by speaker, from 7.7% to 28.2% WER. Chrome's stayed between 3.8% and 6.4%.</li>
+    <li><strong>Severity of errors.</strong> WER alone does not show which errors matter. Some do not affect the meaning of the instruction ("accent" for "accents"). Others change the requested edit entirely. For example, Chrome transcribed "bolder" as "border" or "boulder" for all three speakers, and "border" is itself a valid design instruction.</li>
   </ul>
 
   <h2>Examples</h2>
   <table class="wide">
-    <thead><tr><th>Said</th><th>Chrome heard</th><th>Whisper heard</th></tr></thead>
+    <thead><tr><th>Spoken</th><th>Chrome transcribed</th><th>Whisper transcribed</th></tr></thead>
     <tbody>
-      <tr><td>…something <strong>bolder</strong></td><td class="bad">something border (S2-Prime, S3-Zenin), something boulder (S1-Potato)</td><td>bolder (S1-Potato, S2-Prime), <span class="bad">buddha</span> (S3-Zenin)</td></tr>
+      <tr><td>…something <strong>bolder</strong></td><td class="bad">"something border" (S2-Prime, S3-Zenin); "something boulder" (S1-Potato)</td><td>correct (S1-Potato, S2-Prime); <span class="bad">"buddha" (S3-Zenin)</span></td></tr>
       <tr><td>Move the <strong>sign-up</strong> button…</td><td>correct for all three</td><td class="bad">"side knob button" (S1-Potato, S2-Prime)</td></tr>
-      <tr><td>Put the <strong>leaderboard</strong> table…</td><td>correct for all three</td><td class="bad">"little ball table" (S1-Potato), "lid above the wind" (S3-Zenin)</td></tr>
-      <tr><td>…join the <strong>league</strong></td><td>correct for all three</td><td class="bad">"join the leak" (S1-Potato), "join delete" (S2-Prime)</td></tr>
+      <tr><td>Put the <strong>leaderboard</strong> table…</td><td>correct for all three</td><td class="bad">"little ball table" (S1-Potato); "lid above the wind" (S3-Zenin)</td></tr>
+      <tr><td>…join the <strong>league</strong></td><td>correct for all three</td><td class="bad">"join the leak" (S1-Potato); "join delete" (S2-Prime)</td></tr>
       <tr><td>…background <strong>dark blue</strong></td><td class="bad">"black blue" (S3-Zenin)</td><td class="bad">"but I blew" (S3-Zenin)</td></tr>
     </tbody>
   </table>
 
   <h2>Limitations</h2>
   <ul>
-    <li>Three speakers from only two ethnic groups is tiny, and there's no comparison accent yet. Treat these numbers as a first look, not a finding.</li>
-    <li>People read a script in a quiet room. Real prompting is spontaneous and messier.</li>
-    <li>Chrome heard live audio while Whisper got the saved file, and I tested only one Whisper size. Larger models may do better.</li>
-    <li>Chrome's recogniser is a cloud service and can change without notice.</li>
+    <li>The sample of three speakers from two ethnic groups is very small, and it has no comparison accent. These results are exploratory and should not be read as a finding.</li>
+    <li>Participants read a script in a quiet room. Real prompting is spontaneous and likely to be less fluent.</li>
+    <li>The two systems did not receive identical input: Chrome transcribed live audio, while Whisper transcribed the saved recordings. I also tested only one Whisper model size, and larger models may perform better.</li>
+    <li>Chrome's recogniser is a cloud service, so its behaviour may change without notice.</li>
   </ul>
 
   <h2>Implications and future work</h2>
-  <p>Speech input works for Nigerian-accented English, but which engine you pick matters, and so does who is speaking. Counting wrong words isn't enough either. What matters is whether an error changes what the AI does.</p>
-  <p>Next, I'm extending this to about 12 speakers across Yoruba, Igbo and Hausa backgrounds, and marking which errors change the instruction. Longer term, I want to compare Nigerian and North American English on real generative AI prompts, see how recognition errors change the way people prompt, and test interface fixes, like confirming uncertain words before the AI acts.</p>
+  <p>These results suggest that speech input is viable for Nigerian-accented English, but accuracy depends on both the recognition system and the speaker. They also show that the error count alone is not enough. What matters is whether an error changes the action the AI system takes.</p>
+  <p>Next, I will extend the pilot to about 12 speakers from Yoruba, Igbo and Hausa backgrounds, and classify which errors change the meaning of an instruction. Longer term, I plan to compare Nigerian and North American English on real generative AI prompts, examine how recognition errors change the way people prompt, and evaluate interface interventions, such as asking users to confirm uncertain words before the AI acts.</p>
 
   <footer>
-    Code, scripts and text transcripts: <a href="[GITHUB_LINK]">GitHub</a>. Audio is not published; speakers agreed to take part and are identified by code names only.<br>
+    Code, transcripts and audio recordings: <a href="https://github.com/ucheorjins/Speech-to-text-with-Nigerian-accented-English">GitHub</a>. All participants gave consent to take part and to share their recordings, and are identified by code names only.<br>
     Contact: [your email]
   </footer>
 </main>
